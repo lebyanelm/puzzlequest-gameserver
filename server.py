@@ -5,11 +5,11 @@ Server description goes here
 __________________________________
 """
 
-from flask import Flask, jsonify
-from flask_cors import CORS, cross_origin
-from pymongo import MongoClient
-from os import environ
-from dotenv import load_dotenv
+import flask
+import flask_cors
+import pymongo
+import os
+import dotenv
 
 from models.response import Response
 
@@ -18,8 +18,8 @@ __________________________________
 DEVELOPMENTAL ENVIRONMENT VARIABLES
 __________________________________
 """
-if environ.get("environment") != "production":
-	load_dotenv()
+if os.environ.get("environment") != "production":
+	dotenv.load_dotenv()
 
 
 """
@@ -27,10 +27,10 @@ __________________________________
 SERVER INSTANCE SETUP
 __________________________________
 """
-server_instance = Flask(__name__,
+server_instance = flask.Flask(__name__,
 			static_folder="./assets/",
             static_url_path="/server_name/assets/")
-CORS(server_instance, resources={r"*": {"origins": "*"}})
+flask_cors.CORS(server_instance, resources={r"*": {"origins": "*"}})
 
 """
 __________________________________
@@ -38,8 +38,8 @@ DATABASE CONNECTION
 __________________________________
 """
 client = None
-if environ.get("MONGO_CONNECTION"):
-	client = MongoClient(environ.get("MONGODB_CONNECTION"), tlsInsecure=True)
+if os.environ.get("MONGO_CONNECTION"):
+	client = pymongo.MongoClient(os.environ.get("MONGODB_CONNECTION"))
 
 
 """
@@ -49,6 +49,7 @@ __________________________________
 """
 # Returns status of the server
 @server_instance.route("/template/status", methods=["GET"])
-@cross_origin()
+@flask_cors.cross_origin()
 def status():
+	print(flask.request)
 	return Response(cd=200, msg="Running.").to_json()
