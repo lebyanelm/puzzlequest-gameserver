@@ -1,4 +1,4 @@
-from server import server_instance
+from server import server_instance, socketio_server
 
 if __name__ == '__main__':
-    server_instance.run(port=5000)
+    socketio_server.run(server_instance, port=4000)
